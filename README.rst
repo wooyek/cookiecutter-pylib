@@ -88,11 +88,10 @@ First make sure you have newest setuptools installed::
 
     pip install pip setuptools -U
 
-Once you've got at least a prototype working and tests running, 
+Once you've got at least a prototype working and tests running,
 it's time to register the app on PyPI::
 
     python setup.py register
-
 
 Time to release a new version? Bam!
 

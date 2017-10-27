@@ -30,7 +30,7 @@ test: ## run tests quickly with the default Python
 test-all: ## run tests on every Python version with tox
 	tox
 
-publish: clean ## package and upload a release
+publish: ## package and upload a release
 	git checkout develop
 	git merge master --verbose
 	git push origin develop --verbose

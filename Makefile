@@ -30,6 +30,12 @@ test: ## run tests quickly with the default Python
 test-all: ## run tests on every Python version with tox
 	tox
 
+publish: clean ## package and upload a release
+	git checkout develop
+	git merge master --verbose
+	git push origin develop --verbose
+	git push origin master --verbose
+
 sync: ## Sync master and develop branches in both directions
 	git checkout develop
 	git pull origin develop --verbose
@@ -41,11 +47,8 @@ sync: ## Sync master and develop branches in both directions
 	git merge develop --verbose
 	git checkout develop
 
-release: sync test test-all ## package and upload a release
-	git checkout develop
-	git merge master --verbose
-	git push origin develop --verbose
-	git push origin master --verbose
+release: sync test test-all publish ## package and upload a release
+	;
 
 upgrade-requirements: ## compile and freeze requirements file
 	pip-compile -U --allow-unsafe --annotate

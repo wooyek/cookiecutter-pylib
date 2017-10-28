@@ -26,15 +26,13 @@ you through the process.
 From sources
 ------------
 
-The sources for {{ cookiecutter.project_name }} can be downloaded from the `project website`_.
-
 You can either clone the public repository:
 
 .. code-block:: console
 
     $ git clone {{ cookiecutter.repo_url }}
 
-Or download the download source from {{ cookiecutter.project_url }}. Once you have a copy of the source, you can install it with:
+Or download the download source from `project website`_. Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 

@@ -3,12 +3,14 @@
 # We want to install (not modifiy PYTHONPATH) local package in editable mode
 -e .
 
-{% if cookiecutter.use_read_the_docs == 'y' -%}
+{% if cookiecutter.include_sphinx_doc == 'y' -%}
 # Documentaion
 -r ../docs/requirements.txt
 {% endif %}
 
 # Other locally needed tooling
+pip
+setuptools
 bumpversion
 wheel
 invoke

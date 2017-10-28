@@ -14,6 +14,12 @@ if sys.version_info > (3, 0):
 else:
     import imp
 
+QUICK_CONTEXT = {
+    'git_init': 'n',
+    'run_tests_on_init': 'n',
+    'create_virtual_environment': 'n',
+}
+
 
 @contextmanager
 def inside_dir(dirpath):
@@ -59,7 +65,7 @@ def check_output_inside_dir(command, dirpath):
 
 
 def test_year_compute_in_license_file(cookies):
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context=QUICK_CONTEXT.copy()) as result:
         license_file_path = result.project.join('LICENSE')
         now = datetime.datetime.now()
         assert str(now.year) in license_file_path.read()
@@ -74,7 +80,7 @@ def project_info(result):
 
 
 def test_bake_with_defaults(cookies):
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context=QUICK_CONTEXT.copy()) as result:
         assert result.project.isdir()
         assert result.exit_code == 0
         assert result.exception is None
@@ -88,7 +94,7 @@ def test_bake_with_defaults(cookies):
 
 
 def test_bake_and_run_tests(cookies):
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context=QUICK_CONTEXT.copy()) as result:
         assert result.project.isdir()
         run_inside_dir('python setup.py test', str(result.project)) == 0
         print("test_bake_and_run_tests path", str(result.project))
@@ -96,21 +102,23 @@ def test_bake_and_run_tests(cookies):
 
 def test_bake_withspecialchars_and_run_tests(cookies):
     """Ensure that a `full_name` with double quotes does not break setup.py"""
-    with bake_in_temp_dir(cookies, extra_context={'full_name': 'name "quote" name'}) as result:
+    extra_context = dict(QUICK_CONTEXT, full_name='name "quote" name')
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         assert result.project.isdir()
         run_inside_dir('python setup.py test', str(result.project)) == 0
 
 
 def test_bake_with_apostrophe_and_run_tests(cookies):
     """Ensure that a `full_name` with apostrophes does not break setup.py"""
-    with bake_in_temp_dir(cookies, extra_context={'full_name': "O'connor"}) as result:
+    extra_context = dict(QUICK_CONTEXT, full_name="O'connor")
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         assert result.project.isdir()
         run_inside_dir('python setup.py test', str(result.project)) == 0
 
 
 def test_bake_and_run_travis_pypi_setup(cookies):
     # given:
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context=QUICK_CONTEXT.copy()) as result:
         project_path = str(result.project)
 
         # when:
@@ -124,7 +132,8 @@ def test_bake_and_run_travis_pypi_setup(cookies):
 
 
 def test_bake_without_travis_pypi_setup(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'use_pypi_deployment_with_travis': 'n'}) as result:
+    extra_context = dict(QUICK_CONTEXT, use_pypi_deployment_with_travis="n")
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         result_travis_config = yaml.load(result.project.join(".travis.yml").open())
         assert "deploy" not in result_travis_config
         assert "python" == result_travis_config["language"]
@@ -133,7 +142,8 @@ def test_bake_without_travis_pypi_setup(cookies):
 
 
 def test_bake_without_author_file(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'create_author_file': 'n'}) as result:
+    extra_context = dict(QUICK_CONTEXT, create_author_file="n")
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         found_toplevel_files = [f.basename for f in result.project.listdir()]
         assert 'AUTHORS.rst' not in found_toplevel_files
         doc_files = [f.basename for f in result.project.join('docs').listdir()]
@@ -151,7 +161,7 @@ def test_bake_without_author_file(cookies):
 
 
 def test_make_help(cookies):
-    with bake_in_temp_dir(cookies) as result:
+    with bake_in_temp_dir(cookies, extra_context=QUICK_CONTEXT.copy()) as result:
         output = check_output_inside_dir('make help', str(result.project))
         assert b"check code coverage quickly with the default Python" in output
 
@@ -165,13 +175,15 @@ def test_bake_selecting_license(cookies):
         'GNU General Public License v3': 'GNU GENERAL PUBLIC LICENSE',
     }
     for license, target_string in license_strings.items():
-        with bake_in_temp_dir(cookies, extra_context={'open_source_license': license}) as result:
+        extra_context = dict(QUICK_CONTEXT, open_source_license=license)
+        with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
             assert target_string in result.project.join('LICENSE').read()
             assert license in result.project.join('setup.py').read()
 
 
 def test_bake_not_open_source(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'open_source_license': 'Not open source'}) as result:
+    extra_context = dict(QUICK_CONTEXT, open_source_license='Not open source')
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         found_toplevel_files = [f.basename for f in result.project.listdir()]
         assert 'setup.py' in found_toplevel_files
         assert 'LICENSE' in found_toplevel_files
@@ -179,7 +191,8 @@ def test_bake_not_open_source(cookies):
 
 
 def test_using_pytest(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'use_pytest': 'y'}) as result:
+    extra_context = dict(QUICK_CONTEXT, use_pytest='y')
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         assert result.project.isdir()
         test_file_path = result.project.join('tests/test_python_pypi_library_boilerplate.py')
         lines = test_file_path.readlines()
@@ -191,7 +204,8 @@ def test_using_pytest(cookies):
 
 
 def test_not_using_pytest(cookies):
-    with bake_in_temp_dir(cookies, extra_context={'use_pytest': 'n'}) as result:
+    extra_context = dict(QUICK_CONTEXT, use_pytest='n')
+    with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         assert result.project.isdir()
         test_file_path = result.project.join('tests/test_python_pypi_library_boilerplate.py')
         lines = test_file_path.readlines()
@@ -200,7 +214,8 @@ def test_not_using_pytest(cookies):
 
 
 def test_project_with_hyphen_in_package_name(cookies):
-    result = cookies.bake(extra_context={'project_name': 'something-with-a-dash'})
+    extra_context = dict(QUICK_CONTEXT, project_name='something-with-a-dash')
+    result = cookies.bake(extra_context=extra_context)
     assert result.project is not None
     project_path = str(result.project)
 
@@ -216,8 +231,8 @@ def test_project_with_hyphen_in_package_name(cookies):
 
 
 def test_bake_with_no_console_script(cookies):
-    context = {'command_line_interface': "No command-line interface"}
-    result = cookies.bake(extra_context=context)
+    extra_context = dict(QUICK_CONTEXT, command_line_interface='No command-line interface')
+    result = cookies.bake(extra_context=extra_context)
     project_path, project_slug, project_dir = project_info(result)
     found_project_files = os.listdir(project_dir)
     assert "cli.py" not in found_project_files
@@ -228,7 +243,7 @@ def test_bake_with_no_console_script(cookies):
 
 
 def test_bake_with_console_script_files(cookies):
-    context = {'command_line_interface': 'click'}
+    context = dict(QUICK_CONTEXT, command_line_interface='click')
     result = cookies.bake(extra_context=context)
     project_path, project_slug, project_dir = project_info(result)
     found_project_files = os.listdir(project_dir)
@@ -240,7 +255,7 @@ def test_bake_with_console_script_files(cookies):
 
 
 def test_bake_with_console_script_cli(cookies):
-    context = {'command_line_interface': 'click'}
+    context = dict(QUICK_CONTEXT, command_line_interface='click')
     result = cookies.bake(extra_context=context)
     project_path, project_slug, project_dir = project_info(result)
     module_path = os.path.join(project_dir, 'cli.py')

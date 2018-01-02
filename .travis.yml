@@ -37,11 +37,12 @@ jobs:
   include:
     - stage: make
       script:
+          - env
           - cookiecutter --no-input .
           - cd python-pypi-library-boilerplate
           - which python
           - ls -la .pyvenv/bin/
-          - ls -la /home/travis/virtualenv/python3.5.3/bin
+          - ls -la /home/travis/virtualenv/python3.5.4/bin
           - tox --version
           - pwd
           - ls -la

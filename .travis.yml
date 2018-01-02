@@ -44,8 +44,6 @@ jobs:
       script:
           - env
           - cookiecutter --no-input .
-          - vex python-pypi-library-boilerplate
-          - env
           - cd python-pypi-library-boilerplate
           - which python
           # - ls -la .pyvenv/bin/

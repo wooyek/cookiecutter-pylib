@@ -5,6 +5,7 @@ pytest ; python_version > '3.3'
 pytest-xdist
 pytest-html
 pytest-sugar
+pytest-cov
 factory-boy
 psycopg2
 pathlib ; python_version < '3.3'

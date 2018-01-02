@@ -23,21 +23,14 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-install_requires = parse_requirements(
-    os.path.join(os.path.dirname(__file__), "requirements", "production.txt"),
-    session=uuid.uuid1()
-)
 
-test_requirements = parse_requirements(
-    os.path.join(os.path.dirname(__file__), "requirements", "test.txt"),
-    session=uuid.uuid1()
-)
+def requirements(path):
+    items = parse_requirements(path, session=uuid.uuid1())
+    return [";".join((str(r.req), str(r.markers))) if r.markers else str(r.req) for r in items]
 
-setup_requirements = [
-{%- if cookiecutter.use_pytest == 'y' %}
-    'pytest-runner',
-{%- endif %}
-]
+
+tests_require = requirements(os.path.join(os.path.dirname(__file__), "requirements", "testing.txt"))
+install_requires = requirements(os.path.join(os.path.dirname(__file__), "requirements", "production.txt"))
 
 
 def get_version(*file_paths):
@@ -81,7 +74,8 @@ if sys.argv[-1] == 'tag':
     'BSD license': 'License :: OSI Approved :: BSD License',
     'ISC license': 'License :: OSI Approved :: ISC License (ISCL)',
     'Apache Software License 2.0': 'License :: OSI Approved :: Apache Software License',
-    'GNU General Public License v3': 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+    'GNU General Public License v3': 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Propertiary': 'Propriety',
 } %}
 
 setup(
@@ -92,18 +86,23 @@ setup(
     author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
     author_email='{{ cookiecutter.email }}',
     url='{{ cookiecutter.project_url }}',
-    packages=find_packages('src'),
+    packages=find_packages('src', exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-    {%- if 'no' not in cookiecutter.command_line_interface|lower %}
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.package_name }}={{ cookiecutter.package_name }}.cli:main'
         ]
     },
-    {%- endif %}
     include_package_data=True,
-    install_requires=[str(r.req) for r in install_requires],
+    exclude_package_data={
+        '': ['test*.py', 'tests/*.env', '**/tests.py'],
+    },
+    python_requires='>=2.7',
+    install_requires=install_requires,
+    extras_require={
+        'factories': ['factory-boy'],
+    },
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
@@ -117,14 +116,15 @@ setup(
 {%- endif %}
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     test_suite='tests',
-    tests_require=[str(r.req) for r in test_requirements],
-    setup_requires=setup_requirements,
+    tests_require=tests_require,
+    # https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner
+    setup_requires=['pytest-runner'],
 )

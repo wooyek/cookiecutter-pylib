@@ -33,6 +33,7 @@ clean-build: ## remove build artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
+	rm -fr example_project/.eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
@@ -47,28 +48,26 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
+isort:
+	isort --verbose --recursive src tests example_project setup.py
+
 lint: ## check style with flake8
+	flake8 src tests setup.py manage.py
+	isort --verbose --check-only --diff --recursive src tests example_project setup.py
 	python setup.py check --strict --metadata --restructuredtext
 	check-manifest  --ignore .idea,.idea/* .
-	flake8 src tests setup.py
-	isort --verbose --check-only --diff --recursive src tests setup.py
 
 test: ## run tests quickly with the default Python
-	{% if cookiecutter.use_pytest == 'y' -%}
-		pytest
-	{% else %}
-		python setup.py test
-	{%- endif %}
+	pytest
 
-test-all: ## run tests on every Python version with tox
-	tox
+tox: ## run tests on every Python version with tox
+	tox --skip-missing-interpreters --recreate -e clean,py35,check,report,docs,spell
+
+detox: ## run tests on every Python version with tox
+	detox --skip-missing-interpreters --recreate -e clean,py35,check,report,docs,spell
 
 coverage: ## check code coverage quickly with the default Python
-{%- if cookiecutter.use_pytest == 'y' %}
-	coverage run --source src -m pytest
-{%- else %}
-	coverage run --source src setup.py test
-{%- endif %}
+	coverage run --source src --parallel-mode setup.py test
 
 coverage-report: coverage ## check code coverage and view report in the browser
 	coverage report -m
@@ -76,7 +75,7 @@ coverage-report: coverage ## check code coverage and view report in the browser
 	$(BROWSER) tmp/coverage/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/{{ cookiecutter.package_name }}.rst
+	rm -f docs/{{ cookiecutter.package_name }}*.rst
 	rm -f docs/modules.rst
 	sphinx-apidoc -o docs/ -H "Api docs" src
 	$(MAKE) -C docs clean
@@ -88,7 +87,7 @@ docs-view: docs ## generate Sphinx HTML documentation, including API docs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
-publish: clean ## package and upload a release
+upload: clean ## package and upload a release
 	python setup.py sdist upload
 	python setup.py bdist_wheel upload
 
@@ -114,8 +113,21 @@ sync: ## Sync master and develop branches in both directions
 bump: ## increment version number
 	bumpversion patch
 
-release: sync test-all bump publish ## package and upload a release
+upgrade: ## upgrade frozen requirements to the latest version
+	pipenv install -r requirements/production.txt
+	pipenv install --dev -r requirements/development.txt
+	pipenv lock --requirements > requirements.txt
+	sort requirements.txt -o requirements.txt
+
+release: upgrade sync lint tox bump dist ## build new package version release and sync repo
 	git checkout develop
 	git merge master --verbose
 	git push origin develop --verbose
 	git push origin master --verbose
+
+publish: release upload ## release and upload new version
+
+locales:
+	# https://docs.djangoproject.com/en/1.11/ref/django-admin/#django-admin-makemessages
+	python manage.py makemessages -v 3 --no-wrap --ignore ".*" --locale=pl_PL
+	python manage.py compilemessages -v 3

@@ -1,4 +1,5 @@
 alabaster
+backports.shutil_which ; python_version < '3.4'
 cookiecutter
 cryptography
 flake8
@@ -8,6 +9,7 @@ pytest
 pytest-cookies
 pytest-cov
 pytest-xdist
+pytest-sugar
 PyYAML
 sh
 tox

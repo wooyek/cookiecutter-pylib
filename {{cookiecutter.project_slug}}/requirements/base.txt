@@ -3,6 +3,7 @@
 # Local proprietary packages
 --find-links=requirements
 # Other dependencies
-{%- if cookiecutter.command_line_interface|lower == 'click' %}
-Click>=6.0
-{%- endif %}
+click
+enum34 ; python_version < '3.4'
+pathlib ; python_version < '3.3'
+requests

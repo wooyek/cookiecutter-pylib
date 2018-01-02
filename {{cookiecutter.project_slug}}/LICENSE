@@ -96,7 +96,7 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
 
-{% elif cookiecutter.open_source_license == 'Not open source' %}
+{% elif cookiecutter.open_source_license == 'Propertiary' %}
 {{ cookiecutter.project_short_description }}
 Copyright (C) {% now 'local', '%Y' %} {{ cookiecutter.copyright }}
 All rights reserved.

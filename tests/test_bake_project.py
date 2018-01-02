@@ -44,7 +44,7 @@ def bake_in_temp_dir(cookies, *args, **kwargs):
     result = cookies.bake(*args, **kwargs)
     try:
         # assert result.error is None
-        assert result.exception is None, result.exception
+        assert result.exception is None, getattr(result.exception, 'error', result.exception)
         yield result
     finally:
         rmtree(str(result.project))

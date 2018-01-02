@@ -20,6 +20,7 @@ before_install:
 
 install:
   - pip install -U tox setuptools pip cookiecutter tox-travis
+  - pip install "backports.shutil_which ; python_version < '3.4'"
   - virtualenv --version
   - easy_install --version
   - pip --version

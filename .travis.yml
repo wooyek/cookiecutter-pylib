@@ -27,7 +27,8 @@ install:
   - tox --version
   - git --version
   - python3 -m venv -h
-  - mkdir -p ~/.virtualenvs
+  - env
+  - mkdir -p ~/.local/share/virtualenvs
 
 script:
   # If test fail with vague messages, uncomment this and see generation log

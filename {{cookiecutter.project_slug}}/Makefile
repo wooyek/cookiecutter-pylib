@@ -61,10 +61,10 @@ test: ## run tests quickly with the default Python
 	pytest
 
 tox: ## run tests on every Python version with tox
-	tox --skip-missing-interpreters --recreate -e clean,py35,check,report,docs,spell
-
+	tox --skip-missing-interpreters --recreate
+	
 detox: ## run tests on every Python version with tox
-	detox --skip-missing-interpreters --recreate -e clean,py35,check,report,docs,spell
+	detox --skip-missing-interpreters --recreate
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source src --parallel-mode setup.py test

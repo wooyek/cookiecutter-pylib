@@ -4,6 +4,9 @@ Cookiecutter PyLib
 
 Cookiecutter_ template for a Python PyPI ready package library, extends upon `audreyr/cookiecutter-pypackage`_
 
+Instead of hacking boilerplate setup you can jump to coding immediately. All the check are already in place and a your package can be nicely released to pypi.
+
+
 * GitHub repo: https://github.com/wooyek/cookiecutter-pylib/
 * Documentation: https://cookiecutter-pylib.readthedocs.io/
 * Free software: BSD license
@@ -20,13 +23,28 @@ Cookiecutter_ template for a Python PyPI ready package library, extends upon `au
     :target: http://cookiecutter-pylib.readthedocs.io/en/latest/
     :alt: Documentation build status
 
+.. image:: https://api.codeclimate.com/v1/badges/907a4f5f3e624e0a9cd8/maintainability
+   :target: https://codeclimate.com/github/wooyek/cookiecutter-pylib/maintainability
+   :alt: Maintainability
+
+.. image:: https://img.shields.io/github/license/wooyek/cookiecutter-pylib.svg
+    :target: https://github.com/wooyek/cookiecutter-pylib/
+    :alt: License
+
+.. image:: https://img.shields.io/twitter/url/https/github.com/wooyek/cookiecutter-pylib.svg?style=social
+    :target: https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fwooyek%2Fcookiecutter-pylib
+    :alt: Tweet about this project
+
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+    :target: https://saythanks.io/to/wooyek
+
 
 Features
 --------
 
 * Testing setup with ``unittest`` and ``python setup.py test`` or ``py.test``
 * Travis-CI_: Ready for Travis Continuous Integration testing
-* Tox_ testing: Setup to easily test for Python 2.6, 2.7, 3.4, 3.5
+* Tox_ testing: Setup to easily test for multiple Python versions
 * Sphinx_ docs: Documentation ready for generation with, for example, ReadTheDocs_
 * Bumpversion_: Pre-configured version bumping with a single command
 * Auto-release to PyPI_ when you push a new tag to master (optional)
@@ -46,11 +64,17 @@ Features
 Quickstart
 ----------
 
-Install the latest Cookiecutter if you haven't installed it yet::
+Before we start we need some tooling::
 
-    pip install -U cookiecutter
+    curl https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py | python
+    pipsi install cookiecutter
+    pipsi install detox
+    pipsi install pew
+    pipsi install vex
+    pipsi install pipenv
+    pip install "backports.shutil_which ; python_version < '3.4'"
 
-Generate a Python package project::
+Now we can generate and initialize a Django app package project::
 
     cookiecutter https://github.com/wooyek/cookiecutter-pylib.git
 
@@ -78,8 +102,11 @@ Code has been written, but does it actually work? Let's find out!
 ::
 
     source .pyvenv/bin/activate
-    (pyvenv) $ pip install -r requirements/local.txt
-    (pyvenv) $ python runtests.py
+    (pyvenv) $ pip install -r requirements/development.txt
+    (pyvenv) $ pytest
+    (pyvenv) $ python setup.py test
+    (pyvenv) $ tox
+
 
 Register releasing on PyPI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,9 +120,10 @@ it's time to register the app on PyPI::
 
     python setup.py register
 
-Time to release a new version? Bam!
 
-    $ make release
+Time to release a new version and upload it to PyPi? Bam!
+
+    $ make publish
 
 It will sync your local and origin repo, test, increment version number, setup and release package then push to origin master.
 

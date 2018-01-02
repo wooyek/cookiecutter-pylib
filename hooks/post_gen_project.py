@@ -100,15 +100,20 @@ if __name__ == '__main__':
     if INCLUDE_SPHINX_DOC:
         shutil.rmtree(os.path.join(PROJECT_DIRECTORY, 'docs'))
 
+    if CREATE_VIRTUAL_ENVIRONMENT and VEX_AVAILABLE:
+        if PIPENV_AVAILABLE:
+            call(["vex", PROJECT_SLUG, 'pipenv', 'install', '-r', 'requirements/production.txt'])
+            call(["vex", PROJECT_SLUG, 'pipenv', 'install', '--dev', '-r', 'requirements/development.txt'])
+        call(["vex", PROJECT_SLUG])
+
     if GIT_INIT:
         git_init()
 
     if RUN_TESTS:
         print("-------> Running tests")
         # call(["detox", "--skip-missing-interpreters"])
+        # call(["detox", "--skip-missing-interpreters", "-e", "clean,py35-django-111,check,report,docs,spell"])
         # call(["make", "test"])
         call(["make", "tox"])
 
     print(BANNER)
-    if CREATE_VIRTUAL_ENVIRONMENT and VEX_AVAILABLE:
-        call(["vex", PROJECT_SLUG])

@@ -19,7 +19,7 @@ before_install:
   - sudo apt-get install -y git-flow python-enchant
 
 install:
-  - pip install -U tox setuptools pip cookiecutter tox-travis
+  - pip install -U tox setuptools pip cookiecutter tox-travis vex pew pipenv
   - pip install "backports.shutil_which ; python_version < '3.4'"
   - virtualenv --version
   - easy_install --version
@@ -50,7 +50,8 @@ jobs:
           - make bump
           - make lint
           - make test
-          - make test-all
+          - make tox
+          - make detox
           - make coverage
           - make dist
           - make install

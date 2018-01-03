@@ -17,4 +17,3 @@ if __name__ == '__main__':
 
         # Exit to cancel project
         sys.exit(1)
-

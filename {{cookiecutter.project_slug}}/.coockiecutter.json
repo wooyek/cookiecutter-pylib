@@ -1,6 +1,5 @@
 {
   "cookiecutter": {
-    "include_sphinx_doc": "{{ cookiecutter.include_sphinx_doc }}",
     "project_slug": "{{ cookiecutter.project_slug }}",
     "project_url": "{{ cookiecutter.project_url }}",
     "pypi_username": "{{ cookiecutter.pypi_username }}",

@@ -10,7 +10,12 @@ import uuid
 from glob import glob
 from os.path import basename, splitext
 
-from pip.req import parse_requirements
+try:  # for pip >= 10
+    # noinspection PyProtectedMember,PyPackageRequirements
+    from pip._internal.req import parse_requirements
+except ImportError:  # for pip <= 9.0.3
+    # noinspection PyPackageRequirements
+    from pip.req import parse_requirements
 
 try:
     from setuptools import setup, find_packages
@@ -79,7 +84,7 @@ if sys.argv[-1] == 'tag':
 } %}
 
 setup(
-    name='{{ cookiecutter.project_slug }}',
+    name='{{ cookiecutter.package_name }}',
     version=version,
     description="""{{ cookiecutter.project_short_description }}""",
     long_description=readme + '\n\n' + history,

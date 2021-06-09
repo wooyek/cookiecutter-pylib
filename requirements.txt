@@ -5,55 +5,147 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 alabaster==0.7.10
-apipkg==1.4               # via apipkg, execnet
-argh==0.26.2              # via argh, watchdog
-arrow==0.12.0             # via jinja2-time
-asn1crypto==0.24.0        # via cryptography
-attrs==17.4.0             # via pytest
+    # via -r requirements.in
+apipkg==1.4
+    # via execnet
+argh==0.26.2
+    # via watchdog
+arrow==0.12.0
+    # via jinja2-time
+asn1crypto==0.24.0
+    # via cryptography
+attrs==17.4.0
+    # via pytest
+backports.functools_lru_cache==1.2.1
+    # via arrow
 backports.shutil-which==3.5.1 ; python_version < "3.4"
-binaryornot==0.4.4        # via binaryornot, cookiecutter
-certifi==2017.11.5        # via certifi, requests
-cffi==1.11.2              # via cffi, cryptography
-chardet==3.0.4            # via binaryornot, chardet, requests
-click==6.7                # via click, cookiecutter, pip-tools
+    # via -r requirements.in
+binaryornot==0.4.4
+    # via cookiecutter
+certifi==2017.11.5
+    # via requests
+cffi==1.11.2
+    # via cryptography
+chardet==3.0.4
+    # via
+    #   binaryornot
+    #   requests
+click==6.7
+    # via
+    #   cookiecutter
+    #   pip-tools
+configparser==4.0.2
+    # via flake8
 cookiecutter==1.6.0
-coverage==4.4.2           # via coverage, pytest-cov
+    # via
+    #   -r requirements.in
+    #   pytest-cookies
+coverage==4.4.2
+    # via pytest-cov
 cryptography==2.1.4
-execnet==1.5.0            # via execnet, pytest-xdist
-first==2.0.1              # via first, pip-tools
+    # via -r requirements.in
+enum34==1.1.10
+    # via
+    #   cryptography
+    #   flake8
+execnet==1.5.0
+    # via pytest-xdist
+first==2.0.1
+    # via pip-tools
 flake8==3.5.0
-future==0.16.0            # via cookiecutter, future
-idna==2.6                 # via cryptography, idna, requests
-jinja2-time==0.2.0        # via cookiecutter, jinja2-time
-jinja2==2.10              # via cookiecutter, jinja2, jinja2-time
-markupsafe==1.0           # via jinja2, markupsafe
-mccabe==0.6.1             # via flake8, mccabe
-pathtools==0.1.2          # via pathtools, watchdog
+    # via -r requirements.in
+funcsigs==1.0.2
+    # via pytest
+future==0.16.0
+    # via cookiecutter
+idna==2.6
+    # via
+    #   cryptography
+    #   requests
+ipaddress==1.0.23
+    # via cryptography
+jinja2-time==0.2.0
+    # via cookiecutter
+jinja2==2.10
+    # via
+    #   cookiecutter
+    #   jinja2-time
+markupsafe==1.0
+    # via jinja2
+mccabe==0.6.1
+    # via flake8
+pathtools==0.1.2
+    # via watchdog
 pip-tools==1.11.0
-pluggy==0.6.0             # via pluggy, pytest, tox
-poyo==0.4.1               # via cookiecutter, poyo
-py==1.5.2                 # via py, pytest, tox
-pycodestyle==2.3.1        # via flake8, pycodestyle
-pycparser==2.18           # via cffi, pycparser
-pyflakes==1.6.0           # via flake8, pyflakes
+    # via -r requirements.in
+pluggy==0.6.0
+    # via
+    #   pytest
+    #   tox
+poyo==0.4.1
+    # via cookiecutter
+py==1.5.2
+    # via
+    #   pytest
+    #   tox
+pycodestyle==2.3.1
+    # via flake8
+pycparser==2.18
+    # via cffi
+pyflakes==1.6.0
+    # via flake8
 pytest-cookies==0.3.0
+    # via -r requirements.in
 pytest-cov==2.5.1
-pytest-forked==0.2        # via pytest-forked, pytest-xdist
+    # via -r requirements.in
+pytest-forked==0.2
+    # via pytest-xdist
 pytest-sugar==0.9.0
+    # via -r requirements.in
 pytest-xdist==1.21.0
+    # via -r requirements.in
 pytest==3.3.1
-python-dateutil==2.6.1    # via arrow, python-dateutil
+    # via
+    #   -r requirements.in
+    #   pytest-cookies
+    #   pytest-cov
+    #   pytest-forked
+    #   pytest-sugar
+    #   pytest-xdist
+python-dateutil==2.6.1
+    # via arrow
 pyyaml==3.12
-requests==2.18.4          # via cookiecutter, requests
+    # via
+    #   -r requirements.in
+    #   watchdog
+requests==2.18.4
+    # via cookiecutter
 sh==1.12.14
-six==1.11.0               # via cryptography, pip-tools, pytest, python-dateutil, six, tox
-termcolor==1.1.0          # via pytest-sugar
+    # via -r requirements.in
+six==1.11.0
+    # via
+    #   cryptography
+    #   pip-tools
+    #   pytest
+    #   python-dateutil
+    #   tox
+termcolor==1.1.0
+    # via pytest-sugar
 tox==2.9.1
-urllib3==1.22             # via requests, urllib3
-virtualenv==15.1.0        # via tox, virtualenv
+    # via -r requirements.in
+urllib3==1.22
+    # via requests
+virtualenv==15.1.0
+    # via tox
 watchdog==0.8.3
-whichcraft==0.4.1         # via cookiecutter, whichcraft
+    # via -r requirements.in
+whichcraft==0.4.1
+    # via cookiecutter
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==9.0.1
-setuptools==38.2.5        # via pip-tools, pytest
+pip==19.2
+    # via -r requirements.in
+setuptools==38.2.5
+    # via
+    #   pip-tools
+    #   pytest
